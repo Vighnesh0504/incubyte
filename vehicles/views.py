@@ -5,6 +5,11 @@ from .models import Vehicle
 from .permissions import IsAdminUserOnly
 from .serializers import VehicleSerializer
 from .filters import VehicleFilter
+from rest_framework import status
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from django.shortcuts import get_object_or_404
+from .services import purchase_vehicle
 
 class VehicleListCreateView(generics.ListCreateAPIView):
 
@@ -43,3 +48,33 @@ class VehicleSearchView(generics.ListAPIView):
     filter_backends = [DjangoFilterBackend]
 
     filterset_class = VehicleFilter
+
+class PurchaseVehicleView(APIView):
+
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, pk):
+
+        vehicle = get_object_or_404(
+            Vehicle,
+            pk=pk,
+        )
+
+        try:
+
+            vehicle = purchase_vehicle(vehicle)
+
+            return Response(
+                {
+                    "message": "Vehicle purchased successfully.",
+                    "quantity": vehicle.quantity,
+                },
+                status=status.HTTP_200_OK,
+            )
+
+        except ValueError as e:
+
+            return Response(
+                {"detail": str(e)},
+                status=status.HTTP_400_BAD_REQUEST,
+            )

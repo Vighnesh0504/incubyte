@@ -3,7 +3,8 @@ from django.urls import path
 from .views import (
     VehicleDetailView,
     VehicleListCreateView,
-    VehicleSearchView
+    VehicleSearchView,
+    PurchaseVehicleView
 )
 
 urlpatterns = [
@@ -21,5 +22,8 @@ urlpatterns = [
         "search/",
         VehicleSearchView.as_view(),
     ),
-
+    path(
+    "<int:pk>/purchase/",
+    PurchaseVehicleView.as_view(),
+    ),
 ]
