@@ -1,10 +1,10 @@
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
-
+from django_filters.rest_framework import DjangoFilterBackend
 from .models import Vehicle
 from .permissions import IsAdminUserOnly
 from .serializers import VehicleSerializer
-
+from .filters import VehicleFilter
 
 class VehicleListCreateView(generics.ListCreateAPIView):
 
@@ -31,3 +31,15 @@ class VehicleDetailView(generics.RetrieveUpdateDestroyAPIView):
             return [IsAuthenticated()]
 
         return [IsAdminUserOnly()]
+
+class VehicleSearchView(generics.ListAPIView):
+
+    serializer_class = VehicleSerializer
+
+    queryset = Vehicle.objects.all()
+
+    permission_classes = [IsAuthenticated]
+
+    filter_backends = [DjangoFilterBackend]
+
+    filterset_class = VehicleFilter
