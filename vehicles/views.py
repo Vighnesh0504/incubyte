@@ -9,7 +9,6 @@ from .serializers import VehicleSerializer
 class VehicleListCreateView(generics.ListCreateAPIView):
 
     queryset = Vehicle.objects.all().order_by("-created_at")
-
     serializer_class = VehicleSerializer
 
     def get_permissions(self):
@@ -18,3 +17,17 @@ class VehicleListCreateView(generics.ListCreateAPIView):
             return [IsAdminUserOnly()]
 
         return [IsAuthenticated()]
+
+
+class VehicleDetailView(generics.RetrieveUpdateDestroyAPIView):
+
+    queryset = Vehicle.objects.all()
+
+    serializer_class = VehicleSerializer
+
+    def get_permissions(self):
+
+        if self.request.method == "GET":
+            return [IsAuthenticated()]
+
+        return [IsAdminUserOnly()]
