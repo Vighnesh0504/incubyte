@@ -9,7 +9,7 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.shortcuts import get_object_or_404
-from .services import purchase_vehicle
+from .services import purchase_vehicle, restock_vehicle
 
 class VehicleListCreateView(generics.ListCreateAPIView):
 
@@ -77,4 +77,38 @@ class PurchaseVehicleView(APIView):
             return Response(
                 {"detail": str(e)},
                 status=status.HTTP_400_BAD_REQUEST,
+            )
+
+class RestockVehicleView(APIView):
+
+    permission_classes = [IsAdminUserOnly]
+
+    def post(self, request, pk):
+
+        vehicle = get_object_or_404(
+            Vehicle,
+            pk=pk,
+        )
+
+        amount = request.data.get("quantity")
+
+        try:
+
+            vehicle = restock_vehicle(
+                vehicle,
+                int(amount),
+            )
+
+            return Response(
+                {
+                    "message": "Vehicle restocked.",
+                    "quantity": vehicle.quantity,
+                }
+            )
+
+        except ValueError as e:
+
+            return Response(
+                {"detail": str(e)},
+                status=400,
             )

@@ -24,3 +24,26 @@ def purchase_vehicle(vehicle: Vehicle):
         vehicle.refresh_from_db()
 
         return vehicle
+
+def restock_vehicle(vehicle: Vehicle, amount: int):
+
+    if amount <= 0:
+        raise ValueError(
+            "Restock quantity must be greater than zero."
+        )
+
+    with transaction.atomic():
+
+        vehicle = (
+            Vehicle.objects
+            .select_for_update()
+            .get(id=vehicle.id)
+        )
+
+        vehicle.quantity = F("quantity") + amount
+
+        vehicle.save()
+
+        vehicle.refresh_from_db()
+
+        return vehicle
