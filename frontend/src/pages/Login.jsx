@@ -1,22 +1,18 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { FaCarSide, FaEye, FaEyeSlash } from "react-icons/fa";
-import api from "../services/api";
+import { loginUser } from "../services/authService";
 
-export default function Register() {
+export default function Login() {
   const navigate = useNavigate();
 
   const [showPassword, setShowPassword] = useState(false);
-  const [showConfirm, setShowConfirm] = useState(false);
+  const [error, setError] = useState("");
 
   const [form, setForm] = useState({
     username: "",
-    email: "",
     password: "",
-    confirmPassword: "",
   });
-
-  const [error, setError] = useState("");
 
   const handleChange = (e) => {
     setForm({
@@ -27,81 +23,71 @@ export default function Register() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     setError("");
 
-    if (form.password !== form.confirmPassword) {
-      setError("Passwords do not match.");
-      return;
-    }
-
     try {
-      await api.post("/auth/register/", {
-        username: form.username,
-        email: form.email,
-        password: form.password,
-      });
+      const data = await loginUser(form);
 
-      alert("Registration Successful!");
-      navigate("/login");
+      localStorage.setItem("access", data.access);
+      localStorage.setItem("refresh", data.refresh);
+      localStorage.setItem("username", form.username);
+
+      navigate("/dashboard");
     } catch (err) {
-      console.log(err.response?.data);
-      setError("Registration failed.");
+      console.error(err.response?.data);
+
+      if (err.response?.data?.detail) {
+        setError(err.response.data.detail);
+      } else {
+        setError("Invalid username or password.");
+      }
     }
   };
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-100 p-4">
-      <div className="w-full max-w-md rounded-xl bg-white p-8 shadow-md">
+      <div className="w-full max-w-md rounded-xl bg-white p-8 shadow-lg">
+        {/* Header */}
         <div className="mb-6 text-center">
-          <FaCarSide className="mx-auto text-4xl text-blue-600" />
-          <h2 className="mt-2 text-2xl font-bold text-gray-800">
-            Create Account
+          <FaCarSide className="mx-auto text-5xl text-blue-600" />
+          <h2 className="mt-3 text-3xl font-bold text-gray-800">
+            Welcome Back
           </h2>
-          <p className="text-sm text-gray-500">
-            Register to continue
+          <p className="mt-1 text-sm text-gray-500">
+            Sign in to your account
           </p>
         </div>
 
+        {/* Error Message */}
         {error && (
-          <div className="mb-4 rounded bg-red-100 p-2 text-center text-red-600">
+          <div className="mb-4 rounded-lg bg-red-100 p-3 text-center text-red-600">
             {error}
           </div>
         )}
 
+        {/* Login Form */}
         <form onSubmit={handleSubmit} className="space-y-5">
+          {/* Username */}
           <div>
-            <label className="mb-1 block text-sm font-medium">
+            <label className="mb-1 block text-sm font-medium text-gray-700">
               Username
             </label>
+
             <input
               type="text"
               name="username"
               value={form.username}
               onChange={handleChange}
-              placeholder="Enter username"
+              placeholder="Enter your username"
+              autoComplete="username"
               required
-              className="w-full rounded-lg border px-4 py-2 focus:border-blue-500 focus:outline-none"
+              className="w-full rounded-lg border border-gray-300 px-4 py-2 text-gray-800 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
             />
           </div>
 
+          {/* Password */}
           <div>
-            <label className="mb-1 block text-sm font-medium">
-              Email
-            </label>
-            <input
-              type="email"
-              name="email"
-              value={form.email}
-              onChange={handleChange}
-              placeholder="Enter email"
-              required
-              className="w-full rounded-lg border px-4 py-2 focus:border-blue-500 focus:outline-none"
-            />
-          </div>
-
-          <div>
-            <label className="mb-1 block text-sm font-medium">
+            <label className="mb-1 block text-sm font-medium text-gray-700">
               Password
             </label>
 
@@ -111,62 +97,39 @@ export default function Register() {
                 name="password"
                 value={form.password}
                 onChange={handleChange}
-                placeholder="Enter password"
+                placeholder="Enter your password"
+                autoComplete="current-password"
                 required
-                className="w-full rounded-lg border px-4 py-2 pr-10 focus:border-blue-500 focus:outline-none"
+                className="w-full rounded-lg border border-gray-300 px-4 py-2 pr-10 text-gray-800 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
               />
 
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
               >
                 {showPassword ? <FaEyeSlash /> : <FaEye />}
               </button>
             </div>
           </div>
 
-          <div>
-            <label className="mb-1 block text-sm font-medium">
-              Confirm Password
-            </label>
-
-            <div className="relative">
-              <input
-                type={showConfirm ? "text" : "password"}
-                name="confirmPassword"
-                value={form.confirmPassword}
-                onChange={handleChange}
-                placeholder="Confirm password"
-                required
-                className="w-full rounded-lg border px-4 py-2 pr-10 focus:border-blue-500 focus:outline-none"
-              />
-
-              <button
-                type="button"
-                onClick={() => setShowConfirm(!showConfirm)}
-                className="absolute right-3 top-1/2 -translate-y-1/2"
-              >
-                {showConfirm ? <FaEyeSlash /> : <FaEye />}
-              </button>
-            </div>
-          </div>
-
+          {/* Login Button */}
           <button
             type="submit"
-            className="w-full rounded-lg bg-blue-600 py-2.5 font-semibold text-white hover:bg-blue-700"
+            className="w-full rounded-lg bg-blue-600 py-2.5 font-semibold text-white transition duration-200 hover:bg-blue-700"
           >
-            Register
+            Sign In
           </button>
         </form>
 
-        <p className="mt-4 text-center text-sm">
-          Already have an account?{" "}
+        {/* Footer */}
+        <p className="mt-6 text-center text-sm text-gray-600">
+          Don't have an account?{" "}
           <Link
-            to="/login"
+            to="/register"
             className="font-medium text-blue-600 hover:underline"
           >
-            Sign In
+            Register
           </Link>
         </p>
       </div>
