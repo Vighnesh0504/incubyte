@@ -5,10 +5,14 @@ const api = axios.create({
 });
 
 api.interceptors.request.use((config) => {
-  const token = localStorage.getItem("access");
+  const publicRoutes = ["/auth/login/", "/auth/register/"];
 
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
+  if (!publicRoutes.includes(config.url)) {
+    const token = localStorage.getItem("access");
+
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
   }
 
   return config;
