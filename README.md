@@ -260,6 +260,59 @@ Authorization: Bearer <access_token>
 - CI/CD Pipeline
 
 ---
+# 🤖 My AI Usage
+
+Artificial Intelligence tools were used throughout the development process to improve productivity, understand concepts, and debug issues. All design decisions, implementation, testing, and final code integration were reviewed and completed by me.
+
+## AI Tools Used
+
+- **ChatGPT (OpenAI)**
+-  **Gemini**
+
+---
+
+## How I Used AI
+
+### 1. Project Planning
+- Planned the overall project structure for the React frontend and Django REST backend.
+- Discussed the folder organization and application architecture.
+
+### 2. Backend Development
+- Clarified Django REST Framework concepts and API implementation.
+- Assisted in understanding JWT authentication using SimpleJWT.
+- Helped troubleshoot authentication, permissions, serializers, and routing issues.
+- Provided explanations for Django models, views, and API endpoints.
+
+### 3. Frontend Development
+- Assisted in building React components using React Router, Axios, and Tailwind CSS.
+- Helped implement login and registration pages.
+- Suggested improvements for component structure and reusable service functions.
+- Assisted with protected routes and authentication flow.
+
+### 4. Debugging
+- Helped diagnose and resolve various issues, including:
+  - JWT authentication errors.
+  - Expired token handling.
+  - API integration issues between React and Django.
+  - React routing problems.
+  - Axios configuration and interceptor issues.
+  - Git repository restructuring while preserving commit history.
+
+### 5. Documentation
+- Assisted in preparing the project README.
+- Suggested project structure documentation.
+- Helped organize API endpoint documentation.
+- Assisted in writing deployment instructions.
+
+---
+
+## Reflection
+
+Using AI significantly improved my development workflow by reducing the time spent troubleshooting errors and understanding unfamiliar concepts. Instead of searching through multiple resources, I was able to quickly identify problems, learn best practices, and explore different implementation approaches.
+
+AI served as a learning and productivity tool rather than a replacement for development. I reviewed, modified, tested, and integrated all generated suggestions into the final project. This process helped me strengthen my understanding of Django REST Framework, React, JWT authentication, and full-stack application development while completing the project more efficiently.
+
+---
 
 # 💻 Developed By
 
@@ -270,8 +323,3 @@ Artificial Intelligence & Machine Learning Engineer
 GitHub:
 https://github.com/Vighnesh0504
 
----
-
-# ⭐ If you like this project
-
-Give this repository a ⭐ on GitHub!
